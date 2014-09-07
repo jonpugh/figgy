@@ -14,14 +14,18 @@
 #   FROM buildpack-deps
 #   FROM debian:wheezy
 web:
-  image: php:5.4-apache
+#  image: php:5.4-apache
+#  @TODO:  The image php:5.4 won't work here until we add serf to it.
+  image: ctlc/wordpress-serf
   links:
     - db
     - serf
   ports:
     - "80"
   volumes:
-    - ./src:/var/www/html
+    - ./src:/app
+  environment:
+    DB_PASSWORD: qa1N76pWAri9
 
 # Database Server
 # MySQL, and a single database and user.
@@ -58,6 +62,7 @@ balancer:
   links:
     - serf
   environment:
+    HAPROXY_PASSWORD: qa1N76pWAri9
 
 # Serf Server
 # Keeps track of the cluster.
