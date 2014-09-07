@@ -1,0 +1,73 @@
+# Figgy
+#
+# A Scalable Docker Cluster
+#
+
+# Web Server
+# Where our code lives.
+# Build by the Dockerfile.
+#
+#  See https://registry.hub.docker.com/_/php/
+#    or https://github.com/docker-library/php/
+#
+# php:5.4-apache
+#   FROM buildpack-deps
+#   FROM debian:wheezy
+web:
+  image: php:5.4-apache
+  links:
+    - db
+    - serf
+  ports:
+    - "80"
+  volumes:
+    - ./src:/var/www/html
+
+# Database Server
+# MySQL, and a single database and user.
+#
+# See https://registry.hub.docker.com/_/mysql/
+#   or https://github.com/docker-library/mysql/
+#
+# mysql:5.7
+#   FROM debian:wheezy
+db:
+  image: mysql:5.7
+  ports:
+    - "3306:3306"
+  environment:
+    MYSQL_ROOT_PASSWORD: longlongrandomrandompasswordHJLRKHEWJKL435225
+    MYSQL_DATABASE: drupal
+    MYSQL_USER: drupal
+    MYSQL_PASSWORD: shorterrandompasswordFDSAJFDSAHJL4t5454
+
+# Load Balancer
+# HAProxy container.  This container is the one exposed to the world.
+#
+# See https://registry.hub.docker.com/u/ctlc/haproxy-serf/dockerfile/
+# and https://registry.hub.docker.com/u/ctlc/haproxy/dockerfile/
+#
+# ctlc/haproxy-serf
+#   FROM ctlc/haproxy
+#   FROM ubuntu:quantal
+#
+balancer:
+  image: ctlc/haproxy-serf
+  ports:
+    - 8080:80
+  links:
+    - serf
+  environment:
+
+# Serf Server
+# Keeps track of the cluster.
+#
+# See https://registry.hub.docker.com/u/ctlc/serf/dockerfile/
+#
+# ctlc/serf
+#   FROM ubuntu:quantal
+serf:
+  image: ctlc/serf
+  ports:
+    - 7373
+    - 7946
