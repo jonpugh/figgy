@@ -20,3 +20,18 @@ Setup
 3. `$ sudo fig up`
 
   - The first time it will take a while as it downloads all your images.
+  - This command will then output the logs from all containers.
+  - The containers will run until the command closes. Use CTRL-C to stop all of containers.
+
+4. Browse to http://127.0.0.1:8080 to view whatever is in the src folder of this repo.
+5. `$ sudo fig scale web=2`
+
+  - This will add another web server, and Serf will automatically add it to the HAProxy
+    load balancer.
+6. Browse to http://127.0.0.1:8080 and keep reloading. You will see the IP address change
+    depending on what container HAProxy sent you to.
+
+With the simple command `fig scale web=X` you can scale the web servers up and down in number.
+
+All of them will have the source code mounted at src available, and be ready to go instantly.
+
